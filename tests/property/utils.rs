@@ -11,13 +11,15 @@ pub fn json_value() -> impl Strategy<Value = Value> {
     ];
 
     leaf.prop_recursive(
-        4, // levels deep
+        4,  // levels deep
         64, // max size
-        5, // items per collection
-        |inner| prop_oneof![
-            prop::collection::vec(inner.clone(), 0..5).prop_map(Value::Array),
-            prop::collection::hash_map(any::<String>(), inner, 0..5)
-                .prop_map(|m| Value::Object(m.into_iter().collect())),
-        ]
+        5,  // items per collection
+        |inner| {
+            prop_oneof![
+                prop::collection::vec(inner.clone(), 0..5).prop_map(Value::Array),
+                prop::collection::hash_map(any::<String>(), inner, 0..5)
+                    .prop_map(|m| Value::Object(m.into_iter().collect())),
+            ]
+        },
     )
 }
